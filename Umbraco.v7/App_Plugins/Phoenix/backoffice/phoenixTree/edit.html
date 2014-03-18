@@ -1,0 +1,34 @@
+﻿<div ng-controller="MyPackage.MyTree.EditController">
+    <h1>{{converter.name}} Converter</h1>
+
+    <section>
+        <h3>1. Select the source datatype to convert from:</h3>
+        <div>
+            <select id="datatype" ng-disabled="hasTested || isTesting" ng-model="sourceDataTypeId" ng-options="datatype.id as datatype.name for datatype in availableSourceDataTypes"></select>
+        </div>
+    </section>
+
+    <section ng-hide="!(sourceDataTypeId)">
+        <h3>2. Select the target datatype to convert to:</h3>
+        <div>
+            <select id="Select1" ng-disabled="hasTested || isTesting" ng-model="targetDataTypeId" ng-options="datatype.id as datatype.name for datatype in availableTargetDataTypes"></select>
+
+        </div>
+        <p>{{resultMessage}}</p>
+    </section>
+
+    <section ng-hide="!(sourceDataTypeId) || !(targetDataTypeId)">
+        <h3>3. Test the saved data for compatibility with this converter:</h3>
+        <div>
+            <input type="button" value="Test" ng-click="test()" ng-hide="isTesting || hasTested"/>
+        </div>
+        <p>{{resultMessage}}</p>
+    </section>
+
+    <section ng-show="hasTested && isCompatible === true">
+        <h3>3. Convert the data:</h3>
+        <div>
+            <input type="button" value="Convert"/>
+        </div>
+    </section>
+</div>
