@@ -2,8 +2,6 @@
 
     $scope.isTesting = false;
     $scope.hasTested = false;
-    $scope.isCompatible = false;
-    $scope.resultMessage = "";
 
     //get the available source datatypes
     phoenixConverterService.getSourceDataTypes().then(function (data) {
@@ -26,11 +24,10 @@
 
         phoenixConverterService.test($routeParams.id, $scope.sourceDataTypeId).then(function (data) {
             console.log(data);
-            $scope.isCompatible = data.isCompatible;
-            $scope.resultMessage = data.resultMessage;
+            $scope.testResults = data;
             $scope.isTesting = false;
 
-            if ($scope.isCompatible) {
+            if ($scope.testResults.isCompatible) {
                 $scope.hasTested = true;
             }
         });

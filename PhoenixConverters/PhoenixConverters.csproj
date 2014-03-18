@@ -196,7 +196,9 @@
     <Compile Include="Converters\DampCsvToMntp.cs" />
     <Compile Include="Converters\DampXmlToMntp.cs" />
     <Compile Include="Events\Events.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Models\ConversionResult.cs" />
+    <Compile Include="Models\PropertyResult.cs" />
     <Compile Include="PhoenixCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

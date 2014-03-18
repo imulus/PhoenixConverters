@@ -7,9 +7,8 @@
         },
 
         getSourceDataTypes: function() {
-            // Hack - grab DataTypes from Tree API, as `dataTypeService.getAll()` isn't implemented yet
             return umbRequestHelper.resourcePromise(
-                $http.get("/umbraco/backoffice/UmbracoTrees/DataTypeTree/GetNodes?id=-1&application=developer&tree=&isDialog=false"), 'Failed to retrieve source datatypes from tree service'
+                $http.get("/umbraco/backoffice/PhoenixApi/DataType/GetSourceDataTypes"), 'Failed to retrieve source datatypes from API'
             ).then(function (data) {
                 console.log(data);
                 return data.map(function(d) {

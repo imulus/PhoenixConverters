@@ -20,14 +20,23 @@ namespace PhoenixConverters.Models
             foreach (var docType in this.AffectedDocTypes)
             {
                 this.AffectedContent = services.ContentService.GetContentOfContentType(docType.Id);
+
+                foreach (var content in this.AffectedContent)
+                {
+                    this.AffectedProperties = content.PropertyTypes.Where(x => x.DataTypeDefinitionId == targetDataTypeId);
+                }
             }
+
+            PropertyResults = new List<PropertyResult>();
         }
 
         public bool IsCompatible { get; set; }
         public string Message { get; set; }
         public IEnumerable<IContentType> AffectedDocTypes { get; private set; }
         public IEnumerable<IContent> AffectedContent { get; private set; }
+        public IEnumerable<PropertyType> AffectedProperties { get; private set; }
         public IDataTypeDefinition SourceDataTypeDefinition { get; private set; }
         public IDataTypeDefinition TargetDataTypeDefinition { get; private set; }
+        public List<PropertyResult> PropertyResults { get; private set; }
     }
 }

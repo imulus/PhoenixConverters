@@ -39,7 +39,15 @@ namespace PhoenixConverters.Controllers
 
             var result = converter.Convert(dataTypeId, true);
 
-            return new { converterName = converter.Name, sourceDataTypeId = result.SourceDataTypeDefinition.Id, affectedDocTypes = result.AffectedDocTypes.Select(x => x.Name).ToList(), affectedContent = result.AffectedContent.Select(x => x.Name).ToList(), isCompatible = result.IsCompatible, resultMessage = result.Message };
+            return new { 
+                converterName = converter.Name, 
+                sourceDataTypeId = result.SourceDataTypeDefinition.Id, 
+                affectedDocTypes = result.AffectedDocTypes.Select(x => x.Name).ToList(),
+                affectedContent = result.AffectedContent.Select(x => x.Name).ToList(), 
+                isCompatible = result.IsCompatible, 
+                resultMessage = result.Message, 
+                propertyResults = result.PropertyResults 
+            };
         }
 
         [HttpGet]

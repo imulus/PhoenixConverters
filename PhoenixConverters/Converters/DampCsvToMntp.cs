@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PhoenixConverters.Abstract;
 using PhoenixConverters.Models;
+using PhoenixConverters.Extentions;
 using Umbraco.Core.Logging;
 
 namespace PhoenixConverters.Converters
@@ -38,6 +39,24 @@ namespace PhoenixConverters.Converters
         public override ConversionResult Convert(int targetDataTypeId, bool test = true)
         {
             var result = new ConversionResult(Services, targetDataTypeId);
+
+            foreach (var content in result.AffectedContent)
+            {
+                foreach (var propertyType in result.AffectedProperties)
+                {
+                    LogHelper.Info<ConversionResult>(propertyType.Alias);
+                    LogHelper.Info<ConversionResult>(content.GetValue<string>(propertyType.Alias));
+
+                    result.PropertyResults.Add(new PropertyResult() { 
+                        ContentName = content.Name, 
+                        ContentId = content.Id,
+                        PropertyAlias = propertyType.Alias, 
+                        PropertyValue = content.GetValue<string>(propertyType.Alias).TruncateAtWord(100), 
+                        NewValue = "[\"foo\": 123]",
+                        Compatible = true 
+                    });
+                }
+            }
 
             if (true)
             {
