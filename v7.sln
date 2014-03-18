@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.v7", "Umbraco.v7\Umbraco.v7.csproj", "{F111A48C-2AC0-4B4D-86B0-BF861F8531AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonixConverters", "Umbraco.v7.Extentions\PhonixConverters.csproj", "{1BD7521F-CB0D-49FE-BFB5-0B4567A60359}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoenixConverters", "PhoenixConverters\PhoenixConverters.csproj", "{1BD7521F-CB0D-49FE-BFB5-0B4567A60359}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

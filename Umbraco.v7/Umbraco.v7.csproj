@@ -265,9 +265,9 @@
     <Content Include="xslt\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Umbraco.v7.Extentions\PhonixConverters.csproj">
+    <ProjectReference Include="..\PhoenixConverters\PhoenixConverters.csproj">
       <Project>{1bd7521f-cb0d-49fe-bfb5-0b4567a60359}</Project>
-      <Name>PhonixConverters</Name>
+      <Name>PhoenixConverters</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
