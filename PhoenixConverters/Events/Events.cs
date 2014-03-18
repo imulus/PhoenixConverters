@@ -27,6 +27,12 @@ namespace PhoenixConverters.Events
 
             private void MapWebApiRoutes()
             {
+                RouteTable.Routes.MapHttpRoute("PhoenixApiSourceDataTypes", "umbraco/backoffice/PhoenixApi/DataType/{action}/",
+                       new
+                       {
+                           controller = "PhoenixApi"
+                       }
+                );
                 RouteTable.Routes.MapHttpRoute("PhoenixApi", "umbraco/backoffice/PhoenixApi/{action}/{alias}",
                         new
                         {
@@ -39,7 +45,7 @@ namespace PhoenixConverters.Events
                             controller = "PhoenixApi"
                         }
                 );
-                RouteTable.Routes.MapHttpRoute("PhoenixApiDataTypeAlias", "umbraco/backoffice/PhoenixApi/DataType/{action}/{dataTypeAlias}",
+                RouteTable.Routes.MapHttpRoute("PhoenixApiDataTypeByAlias", "umbraco/backoffice/PhoenixApi/DataType/{action}/{dataTypeAlias}",
                         new
                         {
                             controller = "PhoenixApi"

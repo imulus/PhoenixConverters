@@ -43,6 +43,31 @@ namespace PhoenixConverters.Controllers
         }
 
         [HttpGet]
+        public object GetSourceDataTypes()
+        {
+            var docTypes = Services.ContentTypeService.GetAllContentTypes();
+
+            var propertyIds = new List<int>();
+            var list = new List<object>();
+
+            foreach (var docType in docTypes)
+            {
+                foreach(var property in docType.PropertyTypes)
+                {
+                    if(!propertyIds.Contains(property.DataTypeDefinitionId))
+                    {
+                        var dtd = Services.DataTypeService.GetDataTypeDefinitionById(property.DataTypeDefinitionId);
+
+                        list.Add(new { id = dtd.Id, name = dtd.Name });
+                        propertyIds.Add(dtd.Id);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        [HttpGet]
         public object GetDataTypesByAlias(string dataTypeAlias)
         {
             var dataTypes = Services.DataTypeService.GetDataTypeDefinitionByPropertyEditorAlias(dataTypeAlias);
