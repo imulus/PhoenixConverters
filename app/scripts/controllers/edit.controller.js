@@ -33,5 +33,5 @@
         });
     }
   
-    assetsService.loadCss("/App_Plugins/Phoenix/backoffice/css/app.css");
+    assetsService.loadCss("/App_Plugins/Phoenix/css/phoenix.css");
 });
