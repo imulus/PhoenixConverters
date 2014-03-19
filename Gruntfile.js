@@ -1,9 +1,10 @@
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
+  require('time-grunt')(grunt);
   var path = require('path');
 
-  // Add in time grunt
-  require('time-grunt')(grunt);
+  if (grunt.option('target') && !grunt.file.isDir(grunt.option('target')))
+    grunt.fail.warn('The --target option specified is not a valid directory');
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -174,38 +175,9 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', 'Concat files, build Less & copy config & views', function(){
-    validateTarget();
-    grunt.task.run(['concat', 'less', 'msbuild', 'copy:dll', 'copy:config', 'copy:views', 'copy:trees']);
-  });
-
-  grunt.registerTask('nuget', 'Clean, rebuild, copy files for nuget & create it', function(){
-    validateTarget();
-    grunt.task.run(['clean', 'default', 'copy:nuget', 'template:nuspec', 'mkdir:pkg', 'nugetpack']);
-  });
-
-  grunt.registerTask('package', 'Clean, rebuild, copy files for umbraco package & create it', function(){
-    validateTarget();
-    grunt.task.run(['clean', 'default', 'copy:umbraco', 'mkdir:pkg', 'umbracoPackage']);
-  });
-
-  
-  //Validation for --target option
-  function validateTarget() {
-    var destTarget = grunt.config.get('dest');
-    
-    grunt.log.oklns('Target (dest) is: ' + destTarget);
-
-    if(destTarget != 'dist') {
-      if(destTarget === true) {
-        grunt.fail.warn('You need to specify a folder for target: grunt --target=c:/mysite/');
-      }
-
-      if(!grunt.file.isDir(destTarget)){
-        grunt.fail.warn('The target passed in is not a folder path.');
-      }
-    }
-  }
+  grunt.registerTask('default', ['concat', 'less', 'msbuild', 'copy:dll', 'copy:config', 'copy:views', 'copy:trees']);
+  grunt.registerTask('nuget', ['clean', 'default', 'copy:nuget', 'template:nuspec', 'mkdir:pkg', 'nugetpack']);
+  grunt.registerTask('package', ['clean', 'default', 'copy:umbraco', 'mkdir:pkg', 'umbracoPackage']);
 
 };
 
