@@ -13,6 +13,6 @@ namespace PhoenixConverters.Models
         public string PropertyAlias { get; set; }
         public string PropertyValue { get; set; }
         public string NewValue { get; set; }
-        public bool Compatible { get; set; }
+        public bool IsCompatible { get; set; }
     }
 }

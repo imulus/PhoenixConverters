@@ -10,7 +10,6 @@
             return umbRequestHelper.resourcePromise(
                 $http.get("/umbraco/backoffice/PhoenixApi/DataType/GetSourceDataTypes"), 'Failed to retrieve source datatypes from API'
             ).then(function (data) {
-                console.log(data);
                 return data.map(function(d) {
                     return { "id": d.id, "name": d.name }
                 }); 
@@ -21,7 +20,6 @@
             return umbRequestHelper.resourcePromise(
                 $http.get("/umbraco/backoffice/PhoenixApi/DataType/GetDataTypesByAlias/" + dataTypeAlias), 'Failed to retrieve target datatypes from API'
             ).then(function (data) {
-                console.log(data);
                 return data.map(function (d) {
                     return { "id": d.id, "name": d.name }
                 });

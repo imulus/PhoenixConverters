@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using PhoenixConverters.Abstract;
 using PhoenixConverters.Models;
 using PhoenixConverters.Extentions;
@@ -21,18 +22,18 @@ namespace PhoenixConverters.Converters
         }
 
         public override string Name
-        {
+        { 
             get
             {
                 return "DAMP (CSV) to MNTP";
             }
-        }
+        } 
 
         public override string TargetPropertyTypeAlias
         {
             get
             {
-                return "Umbraco.MultipleMediaPicker";
+                return "Umbraco.MultiNodeTreePicker";
             }
         }
 
@@ -42,19 +43,23 @@ namespace PhoenixConverters.Converters
 
             foreach (var content in result.AffectedContent)
             {
-                foreach (var propertyType in result.AffectedProperties)
+                foreach (var propertyType in content.PropertyTypes.Where(x => x.DataTypeDefinitionId == targetDataTypeId))
                 {
-                    LogHelper.Info<ConversionResult>(propertyType.Alias);
-                    LogHelper.Info<ConversionResult>(content.GetValue<string>(propertyType.Alias));
+                    if (!String.IsNullOrWhiteSpace(content.GetValue<string>(propertyType.Alias)))
+                    {
+                        var oldValue = content.GetValue<string>(propertyType.Alias);
+                        var newValue = convert(oldValue);
 
-                    result.PropertyResults.Add(new PropertyResult() { 
-                        ContentName = content.Name, 
-                        ContentId = content.Id,
-                        PropertyAlias = propertyType.Alias, 
-                        PropertyValue = content.GetValue<string>(propertyType.Alias).TruncateAtWord(100), 
-                        NewValue = "[\"foo\": 123]",
-                        Compatible = true 
-                    });
+                        result.PropertyResults.Add(new PropertyResult()
+                        {
+                            ContentName = content.Name,
+                            ContentId = content.Id,
+                            PropertyAlias = propertyType.Alias,
+                            PropertyValue = oldValue.TruncateAtWord(1000000),
+                            NewValue = newValue,
+                            IsCompatible = (!String.IsNullOrWhiteSpace(newValue))
+                        });
+                    }               
                 }
             }
 
@@ -70,6 +75,28 @@ namespace PhoenixConverters.Converters
             }
 
             return result;
+        }
+
+        private string convert(string input)
+        {
+            try
+            {
+                var xd = new XmlDocument();
+                xd.LoadXml(input);
+
+                var idList = new List<string>();
+
+                foreach (XmlNode element in xd.SelectNodes("//Image"))
+                {
+                    idList.Add(element.Attributes["id"].Value);
+                }
+
+                return string.Join(",", idList);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
     }
 }

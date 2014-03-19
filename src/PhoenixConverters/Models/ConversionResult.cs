@@ -15,16 +15,14 @@ namespace PhoenixConverters.Models
         {
             this.SourceDataTypeDefinition = services.DataTypeService.GetAllDataTypeDefinitions(targetDataTypeId).FirstOrDefault();
 
-            this.AffectedDocTypes = services.ContentTypeService.GetAllContentTypes().Where(x => x.PropertyTypes.Where(y => y.DataTypeDefinitionId == targetDataTypeId).Any());
+            this.AffectedDocTypes = new List<IContentType>();
+            this.AffectedContent = new List<IContent>();
+
+            this.AffectedDocTypes.AddRange(services.ContentTypeService.GetAllContentTypes().Where(x => x.PropertyTypes.Where(y => y.DataTypeDefinitionId == targetDataTypeId).Any()));
             
             foreach (var docType in this.AffectedDocTypes)
             {
-                this.AffectedContent = services.ContentService.GetContentOfContentType(docType.Id);
-
-                foreach (var content in this.AffectedContent)
-                {
-                    this.AffectedProperties = content.PropertyTypes.Where(x => x.DataTypeDefinitionId == targetDataTypeId);
-                }
+                this.AffectedContent.AddRange(services.ContentService.GetContentOfContentType(docType.Id).Where(x => !x.Trashed));
             }
 
             PropertyResults = new List<PropertyResult>();
@@ -32,9 +30,8 @@ namespace PhoenixConverters.Models
 
         public bool IsCompatible { get; set; }
         public string Message { get; set; }
-        public IEnumerable<IContentType> AffectedDocTypes { get; private set; }
-        public IEnumerable<IContent> AffectedContent { get; private set; }
-        public IEnumerable<PropertyType> AffectedProperties { get; private set; }
+        public List<IContentType> AffectedDocTypes { get; private set; }
+        public List<IContent> AffectedContent { get; private set; }
         public IDataTypeDefinition SourceDataTypeDefinition { get; private set; }
         public IDataTypeDefinition TargetDataTypeDefinition { get; private set; }
         public List<PropertyResult> PropertyResults { get; private set; }

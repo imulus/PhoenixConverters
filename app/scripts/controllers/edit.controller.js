@@ -10,25 +10,37 @@
 
     phoenixConverterService.getConverterByAlias($routeParams.id).then(function (data) {
         $scope.converter = {};
-        $scope.converter.name = data.name;
+        $scope.converter.name = data.name; 
         $scope.converter.alias = data.alias;
 
         //get the available source datatypes
         phoenixConverterService.getTargetDataTypes(data.targetPropertyTypeAlias).then(function (data) {
             $scope.availableTargetDataTypes = data;
         });
-    });
+    }); 
 
     $scope.test = function () {
         $scope.isTesting = true;
 
         phoenixConverterService.test($routeParams.id, $scope.sourceDataTypeId).then(function (data) {
-            console.log(data);
             $scope.testResults = data;
             $scope.isTesting = false;
 
             if ($scope.testResults.isCompatible) {
                 $scope.hasTested = true;
+            }
+        });
+    }
+
+    $scope.convert = function() {
+        $scope.isConverting = true;
+
+        phoenixConverterService.test($routeParams.id, $scope.sourceDataTypeId).then(function (data) {
+            $scope.testResults = data;
+            $scope.isConverting = false;
+
+            if ($scope.testResults.isCompatible) {
+                $scope.hasConverted = true;
             }
         });
     }
