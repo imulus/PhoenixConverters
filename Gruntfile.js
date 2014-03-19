@@ -34,40 +34,34 @@ module.exports = function(grunt) {
     },
 
     watch: {
+      options: {
+        spawn: false,
+        atBegin: true
+      },
+
       less: {
         files: ['app/styles/**/*.less'],
-        tasks: ['less:dist'],
-        options: {
-          spawn: false
-        }
+        tasks: ['less:dist']
       },
 
       js: {
         files: ['app/scripts/**/*.js'],
-        tasks: ['concat:dist'],
-        options: {
-          spawn: false
-        }
+        tasks: ['concat:dist']
       },
 
       html: {
         files: ['app/views/**/*.html'],
-        tasks: ['copy:views'],
-        options: {
-          spawn: false
-        }
+        tasks: ['copy:views']
       },
 
       trees: {
         files: ['app/tree/**/*'],
         tasks: ['copy:trees']
       },
+
       dll: {
         files: ['src/PhoenixConverters/bin/Debug/*.dll'],
-        tasks: ['copy:dll'],
-        options: {
-          spawn: false
-        }
+        tasks: ['copy:dll']
       }
     },
 
