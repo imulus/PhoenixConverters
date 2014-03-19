@@ -50,12 +50,12 @@
 
     <section ng-show="hasTested && testResults.isCompatible === true">
         <h3>4. Convert the data:</h3>
-        <p>WARNING!  Please make sure you have backed-up your database as this action cannot be undone.  Depending on how much data needs to be processed, this may take several minutes to complete.</p>
+        <p ng-hide="hasConverted">WARNING!  Please make sure you have backed-up your database as this action cannot be undone.  Depending on how much data needs to be processed, this may take several minutes to complete.</p>
         <div>
-            <label>
+            <label ng-hide="hasConverted">
                 <input type="checkbox" ng-model="knowsRisk" /> Please check the box to acknowledge this risk.
             </label>
-            <input ng-disabled="!knowsRisk || isConverting" ng-click="convert()" type="button" value="Convert"/>
+            <input ng-disabled="!knowsRisk || isConverting || hasConverted" ng-click="convert()" type="button" value="Convert"/>
             <img ng-show="isConverting && !hasConverted" src="/App_Plugins/Phoenix/img/loader.gif" ng-show="isConverting"/>
         </div>
     </section>
