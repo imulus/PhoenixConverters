@@ -1,4 +1,4 @@
-﻿angular.module("umbraco").controller('MyPackage.MyTree.EditController', function ($scope, $routeParams, assetsService, phoenixConverterService) {
+﻿angular.module("umbraco").controller('Phoenix.Tree.EditController', function ($scope, $routeParams, assetsService, phoenixConverterService) {
 
     $scope.isTesting = false;
     $scope.hasTested = false;
@@ -33,5 +33,5 @@
         });
     }
   
-    assetsService.loadCss("/App_Plugins/Phoenix/backoffice/css/app.css");
+    assetsService.loadCss("/App_Plugins/Phoenix/css/phoenix.css");
 });
