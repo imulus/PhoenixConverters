@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
+  var path = require('path');
 
   // Add in time grunt
   require('time-grunt')(grunt);
@@ -8,6 +9,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     dest: grunt.option('target') || 'dist',
     basePath: 'App_Plugins/<%= pkg.name %>',
+    csProj: 'src/PhoenixConverters/PhoenixConverters.csproj',
 
     concat: {
       dist: {
@@ -54,6 +56,14 @@ module.exports = function(grunt) {
         options: {
           spawn: false
         }
+      },
+
+      dll: {
+        files: ['src/PhoenixConverters/bin/Debug/*.dll'],
+        tasks: ['copy:dll'],
+        options: {
+          spawn: false
+        }
       }
     },
 
@@ -70,6 +80,13 @@ module.exports = function(grunt) {
         dest: '<%= dest %>/<%= basePath %>/views/'
       },
 
+      dll: {
+        expand: true,
+        flatten: true,
+        src: 'src/PhoenixConverters/bin/Debug/*.dll',
+        dest: '<%= dest %>/bin/'
+      },
+
       nuget: {
         expand: true,
         cwd: '<%= dest %>',
@@ -82,6 +99,21 @@ module.exports = function(grunt) {
         cwd: '<%= dest %>/',
         src: '**',
         dest: 'tmp/umbraco/'
+      },
+
+    },
+
+    msbuild: {
+      options: {
+        stdout: true,
+        verbosity: 'quiet',
+      },
+      dist: {
+        src: ["<%= csProj %>"],
+        options: {
+          projectConfiguration: 'Debug',
+          targets: ['Clean', 'Rebuild']
+        }
       }
     },
 
@@ -145,7 +177,7 @@ module.exports = function(grunt) {
   //TASK: default
   grunt.registerTask('default', 'Concat files, build Less & copy config & views', function(){
     validateTarget();
-    grunt.task.run(['concat', 'less', 'copy:config', 'copy:views']);
+    grunt.task.run(['concat', 'less', 'msbuild', 'copy:dll', 'copy:config', 'copy:views']);
   });
 
   //TASK nuget
