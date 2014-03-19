@@ -58,6 +58,10 @@ module.exports = function(grunt) {
         }
       },
 
+      trees: {
+        files: ['app/tree/**/*'],
+        tasks: ['copy:trees']
+      },
       dll: {
         files: ['src/PhoenixConverters/bin/Debug/*.dll'],
         tasks: ['copy:dll'],
@@ -78,6 +82,14 @@ module.exports = function(grunt) {
         cwd: 'app/views/',
         src: '**',
         dest: '<%= dest %>/<%= basePath %>/views/'
+      },
+
+      trees: {
+        expand: true,
+        cwd: 'app/tree/',
+        src: '**',
+        dest: '<%= dest %>/<%= basePath %>/backoffice/phoenixTree/'
+
       },
 
       dll: {
@@ -177,7 +189,7 @@ module.exports = function(grunt) {
   //TASK: default
   grunt.registerTask('default', 'Concat files, build Less & copy config & views', function(){
     validateTarget();
-    grunt.task.run(['concat', 'less', 'msbuild', 'copy:dll', 'copy:config', 'copy:views']);
+    grunt.task.run(['concat', 'less', 'msbuild', 'copy:dll', 'copy:config', 'copy:views', 'copy:trees']);
   });
 
   //TASK nuget
