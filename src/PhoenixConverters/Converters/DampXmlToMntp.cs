@@ -49,6 +49,7 @@ namespace PhoenixConverters.Converters
                     {
                         var oldValue = content.GetValue<string>(propertyType.Alias);
                         var newValue = convert(oldValue);
+                        var seemedToWork = (!String.IsNullOrWhiteSpace(newValue));
 
                         result.PropertyResults.Add(new PropertyResult()
                         {
@@ -57,8 +58,16 @@ namespace PhoenixConverters.Converters
                             PropertyAlias = propertyType.Alias,
                             PropertyValue = oldValue.TruncateAtWord(1000000),
                             NewValue = newValue,
-                            IsCompatible = (!String.IsNullOrWhiteSpace(newValue))
+                            IsCompatible = seemedToWork
                         });
+
+                        if (!test && seemedToWork)
+                        {
+                            //save the new properties
+                            content.SetValue(propertyType.Alias, newValue);
+                            //Services.ContentService.Save(content);
+                            //publish?
+                        }
                     }
                 }
             }
