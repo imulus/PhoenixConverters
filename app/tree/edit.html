@@ -1,94 +1,95 @@
 ﻿<div class="phoenixWrapper" ng-controller="Phoenix.Tree.EditController">
     <h1>{{converter.name}} Converter</h1>
+    <div class="wizardWrapper">
+        <section>
+            <h3>1. Select the source datatype to convert from:</h3>
+            <div>
+                <select id="datatype" ng-disabled="hasTested || isTesting" ng-model="sourceDataTypeId" ng-options="datatype.id as datatype.name for datatype in availableSourceDataTypes"></select>
+            </div>
+        </section>
 
-    <section>
-        <h3>1. Select the source datatype to convert from:</h3>
-        <div>
-            <select id="datatype" ng-disabled="hasTested || isTesting" ng-model="sourceDataTypeId" ng-options="datatype.id as datatype.name for datatype in availableSourceDataTypes"></select>
-        </div>
-    </section>
+        <section ng-hide="!(sourceDataTypeId)">
+            <h3>2. Select the target datatype to convert to:</h3>
+            <div>
+                <select id="Select1" ng-disabled="hasTested || isTesting" ng-model="targetDataTypeId" ng-options="datatype.id as datatype.name for datatype in availableTargetDataTypes"></select>
+            </div>
+        </section>
 
-    <section ng-hide="!(sourceDataTypeId)">
-        <h3>2. Select the target datatype to convert to:</h3>
-        <div>
-            <select id="Select1" ng-disabled="hasTested || isTesting" ng-model="targetDataTypeId" ng-options="datatype.id as datatype.name for datatype in availableTargetDataTypes"></select>
-        </div>
-    </section>
+        <section ng-hide="!(sourceDataTypeId) || !(targetDataTypeId)">
+            <h3>3. Test the saved data for compatibility with this converter:</h3>
+            <img src="/App_Plugins/Phoenix/img/loader.gif" ng-show="isTesting"/>
+            <div ng-show="testResults">
+                <p>Success Rate: ({{testResults.successfulConversions}}/{{testResults.successfulConversions + testResults.failedConversions}}) {{testResults.successRate}}%</p>
+                <p>{{testResults.resultMessage}}</p>
+            </div>
+            <div>
+                <input type="button" value="Test" ng-click="test()" ng-hide="isTesting || hasTested"/>
+            </div>
 
-    <section ng-hide="!(sourceDataTypeId) || !(targetDataTypeId)">
-        <h3>3. Test the saved data for compatibility with this converter:</h3>
-        <img src="/App_Plugins/Phoenix/img/loader.gif" ng-show="isTesting"/>
-        <div ng-show="testResults">
+            <div class="scroll-div" ng-show="hasTested && !isConverting && !hasConverted">
+                <table>
+                    <tr>
+                        <th>-</th>
+                        <th>Content Name</th>
+                        <th>Content Id</th>
+                        <th>Property Alias</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>Compatible?</th>
+                    </tr>
+                    <tr ng-repeat="propertyResult in testResults.propertyResults" ng-class-odd="'odd'" ng-class-even="'even'">
+                        <td>{{$index + 1}}</td>
+                        <td>{{propertyResult.ContentName}}</td>
+                        <td>{{propertyResult.ContentId}}</td>
+                        <td>{{propertyResult.PropertyAlias}}</td>
+                        <td>{{propertyResult.PropertyValue}}</td>
+                        <td>{{propertyResult.NewValue}}</td>
+                        <td>{{propertyResult.IsCompatible}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </section>
+
+        <section ng-show="hasTested && testResults.isCompatible === true">
+            <h3>4. Convert the data:</h3>
+            <p ng-hide="hasConverted">WARNING!  Please make sure you have backed-up your database as this action cannot be undone.  Depending on how much data needs to be processed, this may take several minutes to complete.</p>
+            <div>
+                <label ng-hide="hasConverted">
+                    <input type="checkbox" ng-model="knowsRisk" /> Please check the box to acknowledge and accept this risk.
+                </label>
+                <input ng-disabled="!knowsRisk || isConverting || hasConverted" ng-click="convert()" type="button" value="Convert"/>
+                <img ng-show="isConverting && !hasConverted" src="/App_Plugins/Phoenix/img/loader.gif" ng-show="isConverting"/>
+            </div>
+        </section>
+
+        <section class="last" ng-show="hasConverted">
+            <h3>5. Conversion Results:</h3>
             <p>Success Rate: ({{testResults.successfulConversions}}/{{testResults.successfulConversions + testResults.failedConversions}}) {{testResults.successRate}}%</p>
             <p>{{testResults.resultMessage}}</p>
-        </div>
-        <div>
-            <input type="button" value="Test" ng-click="test()" ng-hide="isTesting || hasTested"/>
-        </div>
 
-        <div class="scroll-div" ng-show="hasTested && !isConverting && !hasConverted">
-            <table>
-                <tr>
-                    <th>-</th>
-                    <th>Content Name</th>
-                    <th>Content Id</th>
-                    <th>Property Alias</th>
-                    <th>Old Value</th>
-                    <th>New Value</th>
-                    <th>Compatible?</th>
-                </tr>
-                <tr ng-repeat="propertyResult in testResults.propertyResults" ng-class-odd="'odd'" ng-class-even="'even'">
-                    <td>{{$index + 1}}</td>
-                    <td>{{propertyResult.ContentName}}</td>
-                    <td>{{propertyResult.ContentId}}</td>
-                    <td>{{propertyResult.PropertyAlias}}</td>
-                    <td>{{propertyResult.PropertyValue}}</td>
-                    <td>{{propertyResult.NewValue}}</td>
-                    <td>{{propertyResult.IsCompatible}}</td>
-                </tr>
-            </table>
-        </div>
-
-    </section>
-
-    <section ng-show="hasTested && testResults.isCompatible === true">
-        <h3>4. Convert the data:</h3>
-        <p ng-hide="hasConverted">WARNING!  Please make sure you have backed-up your database as this action cannot be undone.  Depending on how much data needs to be processed, this may take several minutes to complete.</p>
-        <div>
-            <label ng-hide="hasConverted">
-                <input type="checkbox" ng-model="knowsRisk" /> Please check the box to acknowledge and accept this risk.
-            </label>
-            <input ng-disabled="!knowsRisk || isConverting || hasConverted" ng-click="convert()" type="button" value="Convert"/>
-            <img ng-show="isConverting && !hasConverted" src="/App_Plugins/Phoenix/img/loader.gif" ng-show="isConverting"/>
-        </div>
-    </section>
-
-    <section class="last" ng-show="hasConverted">
-        <h3>5. Conversion Results:</h3>
-        <p>Success Rate: ({{testResults.successfulConversions}}/{{testResults.successfulConversions + testResults.failedConversions}}) {{testResults.successRate}}%</p>
-        <p>{{testResults.resultMessage}}</p>
-
-        <div class="scroll-div">
-            <table>
-                <tr>
-                    <th>-</th>
-                    <th>Content Name</th>
-                    <th>Content Id</th>
-                    <th>Property Alias</th>
-                    <th>Old Value</th>
-                    <th>New Value</th>
-                    <th>Compatible?</th>
-                </tr>
-                <tr ng-repeat="propertyResult in testResults.propertyResults">
-                    <td>{{$index + 1}}</td>
-                    <td>{{propertyResult.ContentName}}</td>
-                    <td>{{propertyResult.ContentId}}</td>
-                    <td>{{propertyResult.PropertyAlias}}</td>
-                    <td>{{propertyResult.PropertyValue}}</td>
-                    <td>{{propertyResult.NewValue}}</td>
-                    <td>{{propertyResult.IsCompatible}}</td>
-                </tr>
-            </table>
-        </div>
-    </section>
+            <div class="scroll-div">
+                <table>
+                    <tr>
+                        <th>-</th>
+                        <th>Content Name</th>
+                        <th>Content Id</th>
+                        <th>Property Alias</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>Compatible?</th>
+                    </tr>
+                    <tr ng-repeat="propertyResult in testResults.propertyResults">
+                        <td>{{$index + 1}}</td>
+                        <td>{{propertyResult.ContentName}}</td>
+                        <td>{{propertyResult.ContentId}}</td>
+                        <td>{{propertyResult.PropertyAlias}}</td>
+                        <td>{{propertyResult.PropertyValue}}</td>
+                        <td>{{propertyResult.NewValue}}</td>
+                        <td>{{propertyResult.IsCompatible}}</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </div>
 </div>
