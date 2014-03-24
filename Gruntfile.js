@@ -95,7 +95,8 @@ module.exports = function(grunt) {
       dll: {
         expand: true,
         flatten: true,
-        src: 'src/PhoenixConverters/bin/Debug/*.dll',
+        cwd: 'src/PhoenixConverters/bin/Debug/',
+        src: '**',
         dest: '<%= dest %>/bin/'
       },
 

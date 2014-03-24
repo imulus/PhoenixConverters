@@ -24,7 +24,7 @@ namespace PhoenixConverters.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
             }
 
-            return new { alias = converter.Alias, name = converter.Name, targetPropertyTypeAlias = converter.TargetPropertyTypeAlias };
+            return new { alias = converter.Alias, name = converter.Name, targetPropertyTypeAlias = converter.ConverterFor };
         }
 
         [HttpGet]
@@ -42,11 +42,12 @@ namespace PhoenixConverters.Controllers
             return new { 
                 converterName = converter.Name, 
                 sourceDataTypeId = result.SourceDataTypeDefinition.Id, 
-                affectedDocTypes = result.AffectedDocTypes.Select(x => x.Name).ToList(),
-                affectedContent = result.AffectedContent.Select(x => x.Name).ToList(), 
                 isCompatible = result.IsCompatible, 
                 resultMessage = result.Message, 
-                propertyResults = result.PropertyResults 
+                propertyResults = result.PropertyResults,
+                successRate = result.SuccessRate,
+                successfulConversions = result.SuccessfulConversions,
+                failedConversions = result.FailedConversions
             };
         }
 
@@ -66,11 +67,12 @@ namespace PhoenixConverters.Controllers
             {
                 converterName = converter.Name,
                 sourceDataTypeId = result.SourceDataTypeDefinition.Id,
-                affectedDocTypes = result.AffectedDocTypes.Select(x => x.Name).ToList(),
-                affectedContent = result.AffectedContent.Select(x => x.Name).ToList(),
                 isCompatible = result.IsCompatible,
                 resultMessage = result.Message,
-                propertyResults = result.PropertyResults
+                propertyResults = result.PropertyResults,
+                successRate = result.SuccessRate,
+                successfulConversions = result.SuccessfulConversions,
+                failedConversions = result.FailedConversions
             };
         }
 

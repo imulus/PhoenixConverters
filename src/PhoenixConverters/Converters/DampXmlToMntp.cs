@@ -29,7 +29,7 @@ namespace PhoenixConverters.Converters
             }
         }
 
-        public override string TargetPropertyTypeAlias
+        public override string ConverterFor
         {
             get
             {
@@ -37,53 +37,47 @@ namespace PhoenixConverters.Converters
             }
         }
 
-        public override ConversionResult Convert(int targetDataTypeId, bool test = true)
+        public override ConversionResult Convert(int sourceDataTypeId, bool test = true)
         {
-            var result = new ConversionResult(Services, targetDataTypeId);
+            var result = new ConversionResult(Services, sourceDataTypeId);
 
-            foreach (var content in result.AffectedContent)
+            foreach (var ac in result.AffectedContent)
             {
-                foreach (var propertyType in content.PropertyTypes.Where(x => x.DataTypeDefinitionId == targetDataTypeId))
-                {
-                    var oldValue = content.GetValue<string>(propertyType.Alias);
-                    var newValue = convert(oldValue);
-                    var seemedToWork = (!String.IsNullOrWhiteSpace(newValue));
+                var oldValue = ac.Content.GetValue<string>(ac.PropertyType.Alias);
+                var newValue = convert(oldValue);
+                var seemedToWork = (!String.IsNullOrWhiteSpace(newValue));
 
-                    if (!String.IsNullOrWhiteSpace(oldValue))
-                    { 
-                        result.PropertyResults.Add(new PropertyResult()
-                        {
-                            ContentName = content.Name,
-                            ContentId = content.Id,
-                            PropertyAlias = propertyType.Alias,
-                            PropertyValue = oldValue.TruncateAtWord(1000000),
-                            NewValue = newValue,
-                            IsCompatible = seemedToWork
-                        });
+                if (!String.IsNullOrWhiteSpace(oldValue))
+                { 
+                    result.PropertyResults.Add(new PropertyResult()
+                    {
+                        ContentName = ac.Content.Name,
+                        ContentId = ac.Content.Id,
+                        PropertyAlias = ac.PropertyType.Alias,
+                        PropertyValue = oldValue.TruncateAtWord(1000000),
+                        NewValue = newValue,
+                        IsCompatible = seemedToWork
+                    });
 
-                        if (!test && seemedToWork)
-                        {
-                            //save the new properties
-                            content.SetValue(propertyType.Alias, newValue);
-                            Services.ContentService.Save(content);
-                            //publish?
-                        }
+                    if (!test && seemedToWork)
+                    {
+                        //save the new properties
+                        ac.Content.SetValue(ac.PropertyType.Alias, newValue);
+                        Services.ContentService.Save(ac.Content);
+                        //publish?
                     }
                 }
             }
 
-            var successfulCount = result.PropertyResults.Where(x => x.IsCompatible).Count();
-            var failureCount = result.PropertyResults.Where(x => !x.IsCompatible).Count();
-            var percent = (successfulCount * 100 / (failureCount + successfulCount));
+            result = result.Summarize();
+            result.Message = "Complete.";
 
-            if (successfulCount >= failureCount)
+            if (result.SuccessfulConversions >= result.FailedConversions)
             {
-                result.Message = "This converter can convert (" + successfulCount+ "/" + (failureCount + successfulCount) + ") " + percent + "% of the items!";
                 result.IsCompatible = true;
             }
             else
             {
-                result.Message = "It looks like there was a high failure rate!";
                 result.IsCompatible = false;
             }
 

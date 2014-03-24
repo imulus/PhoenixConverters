@@ -20,7 +20,7 @@ namespace PhoenixConverters.Abstract
 
         public abstract string Alias { get; }
         public abstract string Name { get; }
-        public abstract string TargetPropertyTypeAlias { get; }
-        public abstract ConversionResult Convert(int targetDataTypeId, bool preview = true);
+        public abstract string ConverterFor { get; }
+        public abstract ConversionResult Convert(int sourceDataTypeId, bool preview = true);
     }
 }
