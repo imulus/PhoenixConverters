@@ -78,12 +78,18 @@ module.exports = function(grunt) {
         dest: '<%= dest %>/<%= basePath %>/views/'
       },
 
+      img: {
+        expand: true,
+        cwd: 'app/img/',
+        src: '**',
+        dest: '<%= dest %>/<%= basePath %>/img/'
+      },
+
       trees: {
         expand: true,
         cwd: 'app/tree/',
         src: '**',
         dest: '<%= dest %>/<%= basePath %>/backoffice/phoenixTree/'
-
       },
 
       dll: {
@@ -175,7 +181,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', ['concat', 'less', 'msbuild', 'copy:dll', 'copy:config', 'copy:views', 'copy:trees']);
+  grunt.registerTask('default', ['concat', 'less', 'msbuild', 'copy:dll', 'copy:config', 'copy:img', 'copy:views', 'copy:trees']);
   grunt.registerTask('nuget', ['clean', 'default', 'copy:nuget', 'template:nuspec', 'mkdir:pkg', 'nugetpack']);
   grunt.registerTask('package', ['clean', 'default', 'copy:umbraco', 'mkdir:pkg', 'umbracoPackage']);
 
