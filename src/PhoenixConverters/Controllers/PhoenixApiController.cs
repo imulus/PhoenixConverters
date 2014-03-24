@@ -51,6 +51,30 @@ namespace PhoenixConverters.Controllers
         }
 
         [HttpGet]
+        public object Conversion(string alias, int dataTypeId)
+        {
+            var converter = PhoenixCore.GetAllConverters().Where(x => x.Alias.ToLower() == alias.ToLower()).FirstOrDefault();
+
+            if (converter == null)
+            {
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
+            }
+
+            var result = converter.Convert(dataTypeId, false);
+
+            return new
+            {
+                converterName = converter.Name,
+                sourceDataTypeId = result.SourceDataTypeDefinition.Id,
+                affectedDocTypes = result.AffectedDocTypes.Select(x => x.Name).ToList(),
+                affectedContent = result.AffectedContent.Select(x => x.Name).ToList(),
+                isCompatible = result.IsCompatible,
+                resultMessage = result.Message,
+                propertyResults = result.PropertyResults
+            };
+        }
+
+        [HttpGet]
         public object GetSourceDataTypes()
         {
             var docTypes = Services.ContentTypeService.GetAllContentTypes();

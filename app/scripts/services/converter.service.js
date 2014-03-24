@@ -28,7 +28,13 @@
 
         test: function (alias, sourceDataTypeId) {
             return umbRequestHelper.resourcePromise(
-                $http.get("/umbraco/backoffice/PhoenixApi/Perform/Test/" + alias + "/" + sourceDataTypeId), 'Failed to retrieve converter'
+                $http.get("/umbraco/backoffice/PhoenixApi/Perform/Test/" + alias + "/" + sourceDataTypeId), 'Failed to test'
+            );
+        },
+
+        convert: function (alias, sourceDataTypeId) {
+            return umbRequestHelper.resourcePromise(
+                $http.get("/umbraco/backoffice/PhoenixApi/Perform/Conversion/" + alias + "/" + sourceDataTypeId), 'Failed to convert'
             );
         }
     }

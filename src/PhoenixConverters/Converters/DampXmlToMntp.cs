@@ -45,12 +45,12 @@ namespace PhoenixConverters.Converters
             {
                 foreach (var propertyType in content.PropertyTypes.Where(x => x.DataTypeDefinitionId == targetDataTypeId))
                 {
-                    if (!String.IsNullOrWhiteSpace(content.GetValue<string>(propertyType.Alias)))
-                    {
-                        var oldValue = content.GetValue<string>(propertyType.Alias);
-                        var newValue = convert(oldValue);
-                        var seemedToWork = (!String.IsNullOrWhiteSpace(newValue));
+                    var oldValue = content.GetValue<string>(propertyType.Alias);
+                    var newValue = convert(oldValue);
+                    var seemedToWork = (!String.IsNullOrWhiteSpace(newValue));
 
+                    if (!String.IsNullOrWhiteSpace(oldValue))
+                    { 
                         result.PropertyResults.Add(new PropertyResult()
                         {
                             ContentName = content.Name,
@@ -65,7 +65,7 @@ namespace PhoenixConverters.Converters
                         {
                             //save the new properties
                             content.SetValue(propertyType.Alias, newValue);
-                            //Services.ContentService.Save(content);
+                            Services.ContentService.Save(content);
                             //publish?
                         }
                     }
@@ -74,10 +74,11 @@ namespace PhoenixConverters.Converters
 
             var successfulCount = result.PropertyResults.Where(x => x.IsCompatible).Count();
             var failureCount = result.PropertyResults.Where(x => !x.IsCompatible).Count();
+            var percent = (successfulCount * 100 / (failureCount + successfulCount));
 
             if (successfulCount >= failureCount)
             {
-                result.Message = "It looks to be compatible with most of the data!";
+                result.Message = "This converter can convert (" + successfulCount+ "/" + (failureCount + successfulCount) + ") " + percent + "% of the items!";
                 result.IsCompatible = true;
             }
             else
