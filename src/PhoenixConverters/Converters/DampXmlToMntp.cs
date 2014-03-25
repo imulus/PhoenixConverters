@@ -29,7 +29,7 @@ namespace PhoenixConverters.Converters
             }
         }
 
-        public override string ConverterFor
+        public override string ConvertTo
         {
             get
             {
@@ -37,9 +37,9 @@ namespace PhoenixConverters.Converters
             }
         }
 
-        public override ConversionResult Convert(int sourceDataTypeId, bool test = true)
+        public override ConversionResult Convert(int sourceDataTypeId, int targetDataTypeId, bool test = true)
         {
-            var result = new ConversionResult(Services, sourceDataTypeId);
+            var result = new ConversionResult(Services, sourceDataTypeId, targetDataTypeId);
 
             foreach (var ac in result.AffectedContent)
             {
@@ -75,6 +75,10 @@ namespace PhoenixConverters.Converters
             if (result.SuccessfulConversions >= result.FailedConversions)
             {
                 result.IsCompatible = true;
+                if (!test)
+                {
+                    result.UpdatePropertyTypes();
+                }
             }
             else
             {

@@ -39,7 +39,7 @@ namespace PhoenixConverters.Events
                             controller = "PhoenixApi"
                         }
                 );
-                RouteTable.Routes.MapHttpRoute("PhoenixApiTest", "umbraco/backoffice/PhoenixApi/Perform/{action}/{alias}/{dataTypeId}",
+                RouteTable.Routes.MapHttpRoute("PhoenixApiTest", "umbraco/backoffice/PhoenixApi/Perform/{action}/{alias}/{sourceDataTypeId}/{targetDataTypeId}",
                         new
                         {
                             controller = "PhoenixApi"

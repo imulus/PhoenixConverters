@@ -26,15 +26,15 @@
             });
         },
 
-        test: function (alias, sourceDataTypeId) {
+        test: function (alias, sourceDataTypeId, targetDataTypeId) {
             return umbRequestHelper.resourcePromise(
-                $http.get("/umbraco/backoffice/PhoenixApi/Perform/Test/" + alias + "/" + sourceDataTypeId), 'Failed to test'
+                $http.get("/umbraco/backoffice/PhoenixApi/Perform/Test/" + alias + "/" + sourceDataTypeId + "/" + targetDataTypeId), 'Failed to test'
             );
         },
 
-        convert: function (alias, sourceDataTypeId) {
+        convert: function (alias, sourceDataTypeId, targetDataTypeId) {
             return umbRequestHelper.resourcePromise(
-                $http.get("/umbraco/backoffice/PhoenixApi/Perform/Conversion/" + alias + "/" + sourceDataTypeId), 'Failed to convert'
+                $http.get("/umbraco/backoffice/PhoenixApi/Perform/Conversion/" + alias + "/" + sourceDataTypeId + "/" + targetDataTypeId), 'Failed to convert'
             );
         }
     }

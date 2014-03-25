@@ -231,6 +231,7 @@
     <Compile Include="Controllers\PhoenixApiController.cs" />
     <Compile Include="Controllers\PhoenixTreeController.cs" />
     <Compile Include="Converters\DampXmlToMntp.cs" />
+    <Compile Include="Converters\LegacyMntpToMntp.cs" />
     <Compile Include="Events\Events.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\AffectedContent.cs" />

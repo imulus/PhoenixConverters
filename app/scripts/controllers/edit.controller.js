@@ -22,7 +22,8 @@
     $scope.test = function () {
         $scope.isTesting = true;
 
-        phoenixConverterService.test($routeParams.id, $scope.sourceDataTypeId).then(function (data) {
+        phoenixConverterService.test($routeParams.id, $scope.sourceDataTypeId, $scope.targetDataTypeId).then(function (data) {
+            console.log(data);
             $scope.testResults = data;
             $scope.isTesting = false;
 
@@ -35,7 +36,7 @@
     $scope.convert = function() {
         $scope.isConverting = true;
 
-        phoenixConverterService.convert($routeParams.id, $scope.sourceDataTypeId).then(function (data) {
+        phoenixConverterService.convert($routeParams.id, $scope.sourceDataTypeId, $scope.targetDataTypeId).then(function (data) {
             $scope.testResults = data;
             $scope.isConverting = false;
 

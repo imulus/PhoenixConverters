@@ -24,11 +24,11 @@ namespace PhoenixConverters.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
             }
 
-            return new { alias = converter.Alias, name = converter.Name, targetPropertyTypeAlias = converter.ConverterFor };
+            return new { alias = converter.Alias, name = converter.Name, targetPropertyTypeAlias = converter.ConvertTo };
         }
 
         [HttpGet]
-        public object Test(string alias, int dataTypeId)
+        public object Test(string alias, int sourceDataTypeId, int targetDataTypeId)
         {
             var converter = PhoenixCore.GetAllConverters().Where(x => x.Alias.ToLower() == alias.ToLower()).FirstOrDefault();
 
@@ -37,7 +37,7 @@ namespace PhoenixConverters.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
             }
 
-            var result = converter.Convert(dataTypeId, true);
+            var result = converter.Convert(sourceDataTypeId, targetDataTypeId, true);
 
             return new { 
                 converterName = converter.Name, 
@@ -47,12 +47,13 @@ namespace PhoenixConverters.Controllers
                 propertyResults = result.PropertyResults,
                 successRate = result.SuccessRate,
                 successfulConversions = result.SuccessfulConversions,
-                failedConversions = result.FailedConversions
+                failedConversions = result.FailedConversions,
+                affectedDocTypes = result.AffectedDocTypes.Select(x => x.Name).ToList()
             };
         }
 
         [HttpGet]
-        public object Conversion(string alias, int dataTypeId)
+        public object Conversion(string alias, int sourceDataTypeId, int targetDataTypeId)
         {
             var converter = PhoenixCore.GetAllConverters().Where(x => x.Alias.ToLower() == alias.ToLower()).FirstOrDefault();
 
@@ -61,7 +62,7 @@ namespace PhoenixConverters.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
             }
 
-            var result = converter.Convert(dataTypeId, false);
+            var result = converter.Convert(sourceDataTypeId, targetDataTypeId, false);
 
             return new
             {
@@ -72,7 +73,8 @@ namespace PhoenixConverters.Controllers
                 propertyResults = result.PropertyResults,
                 successRate = result.SuccessRate,
                 successfulConversions = result.SuccessfulConversions,
-                failedConversions = result.FailedConversions
+                failedConversions = result.FailedConversions,
+                affectedDocTypes = result.AffectedDocTypes.Select(x => x.Name).ToList()
             };
         }
 
