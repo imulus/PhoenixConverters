@@ -13,6 +13,9 @@ namespace PhoenixConverters.Models
     {
         public ServiceContext Services;
         public bool IsCompatible { get; set; }
+        public bool IsTest { get; set; }
+        public bool ShouldUpdatePropertyTypes { get; set; }
+        public bool ShouldPublish { get; set; }
         public string Message { get; set; }
         public List<AffectedContent> AffectedContent { get; private set; }
         public List<IContentType> AffectedDocTypes { get; private set; }
@@ -23,12 +26,21 @@ namespace PhoenixConverters.Models
         public int FailedConversions { get; private set; }
         public int SuccessRate { get; private set; }
 
-        public ConversionResult(ServiceContext services, int sourceDataTypeId, int targetDataTypeId)
+        public ConversionResult(ServiceContext services, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish, bool isTest)
+        {
+            Init(services, sourceDataTypeId, targetDataTypeId, updatePropertyTypes, publish, isTest);
+        }
+
+        private void Init(ServiceContext services, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish, bool isTest)
         {
             this.Services = services;
-            
+
             this.SourceDataTypeDefinition = services.DataTypeService.GetAllDataTypeDefinitions(sourceDataTypeId).FirstOrDefault();
             this.TargetDataTypeDefinition = services.DataTypeService.GetAllDataTypeDefinitions(targetDataTypeId).FirstOrDefault();
+
+            this.IsTest = isTest;
+            this.ShouldPublish = publish;
+            this.ShouldUpdatePropertyTypes = updatePropertyTypes;
 
             this.AffectedContent = new List<AffectedContent>();
 
@@ -64,7 +76,7 @@ namespace PhoenixConverters.Models
             PropertyResults = new List<PropertyResult>();
         }
 
-        public virtual ConversionResult Summarize(){
+        public ConversionResult Summarize(){
             SuccessfulConversions = this.PropertyResults.Where(x => x.IsCompatible).Count();
             FailedConversions = this.PropertyResults.Where(x => !x.IsCompatible).Count();
             
@@ -73,8 +85,13 @@ namespace PhoenixConverters.Models
             return this;
         }
 
-        public virtual void UpdatePropertyTypes()
+        public ConversionResult UpdatePropertyTypes()
         {
+            if (IsTest || !ShouldUpdatePropertyTypes)
+            {
+                return this;
+            }
+
             foreach (var contentType in AffectedDocTypes)
             {
                 var affectedPropertyTypes = Services.ContentTypeService.GetContentType(contentType.Id).PropertyTypes.Where(y => y.DataTypeDefinitionId == SourceDataTypeDefinition.Id);
@@ -84,6 +101,39 @@ namespace PhoenixConverters.Models
                     Services.ContentTypeService.Save(contentType);
                 }
             }
+            return this;
+        }
+
+        public ConversionResult Convert(Func<string, string> convertMethod)
+        {
+            foreach (var ac in this.AffectedContent)
+            {
+                var oldValue = ac.Content.GetValue<string>(ac.PropertyType.Alias);
+                var newValue = convertMethod(oldValue);
+                var seemedToWork = (!String.IsNullOrWhiteSpace(newValue));
+
+                if (!String.IsNullOrWhiteSpace(oldValue))
+                {
+                    this.PropertyResults.Add(new PropertyResult()
+                    {
+                        ContentName = ac.Content.Name,
+                        ContentId = ac.Content.Id,
+                        PropertyAlias = ac.PropertyType.Alias,
+                        PropertyValue = oldValue,
+                        NewValue = newValue,
+                        IsCompatible = seemedToWork
+                    });
+
+                    if (!IsTest && seemedToWork)
+                    {
+                        //save the new properties
+                        ac.Content.SetValue(ac.PropertyType.Alias, newValue);
+                        Services.ContentService.Save(ac.Content);
+                        //publish?
+                    }
+                }
+            }
+            return this.Summarize().UpdatePropertyTypes();
         }
     }
 }

@@ -37,9 +37,9 @@ namespace PhoenixConverters.Converters
             }
         }
 
-        public override ConversionResult Convert(int sourceDataTypeId, int targetDataTypeId, bool test = true)
+        public override ConversionResult Convert(int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish, bool test = true)
         {
-            var result = new ConversionResult(Services, sourceDataTypeId, targetDataTypeId);
+            var result = new ConversionResult(Services, sourceDataTypeId, targetDataTypeId, updatePropertyTypes, publish, test);
 
             foreach (var ac in result.AffectedContent)
             {

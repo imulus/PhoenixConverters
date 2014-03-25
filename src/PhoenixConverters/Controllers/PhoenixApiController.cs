@@ -28,7 +28,7 @@ namespace PhoenixConverters.Controllers
         }
 
         [HttpGet]
-        public object Test(string alias, int sourceDataTypeId, int targetDataTypeId)
+        public object Test(string alias, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish)
         {
             var converter = PhoenixCore.GetAllConverters().Where(x => x.Alias.ToLower() == alias.ToLower()).FirstOrDefault();
 
@@ -37,7 +37,7 @@ namespace PhoenixConverters.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
             }
 
-            var result = converter.Convert(sourceDataTypeId, targetDataTypeId, true);
+            var result = converter.Convert(sourceDataTypeId, targetDataTypeId, updatePropertyTypes, publish, true);
 
             return new { 
                 converterName = converter.Name, 
@@ -53,7 +53,7 @@ namespace PhoenixConverters.Controllers
         }
 
         [HttpGet]
-        public object Conversion(string alias, int sourceDataTypeId, int targetDataTypeId)
+        public object Conversion(string alias, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish)
         {
             var converter = PhoenixCore.GetAllConverters().Where(x => x.Alias.ToLower() == alias.ToLower()).FirstOrDefault();
 
@@ -62,7 +62,7 @@ namespace PhoenixConverters.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
             }
 
-            var result = converter.Convert(sourceDataTypeId, targetDataTypeId, false);
+            var result = converter.Convert(sourceDataTypeId, targetDataTypeId, updatePropertyTypes, publish, false);
 
             return new
             {

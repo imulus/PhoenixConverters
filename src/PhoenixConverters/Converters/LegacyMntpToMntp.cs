@@ -37,48 +37,16 @@ namespace PhoenixConverters.Converters
             }
         }
 
-        public override ConversionResult Convert(int sourceDataTypeId, int targetDataTypeId, bool test = true)
+        public override ConversionResult Convert(int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish, bool isTest = true)
         {
-            var result = new ConversionResult(Services, sourceDataTypeId, targetDataTypeId);
+            var result = new ConversionResult(Services, sourceDataTypeId, targetDataTypeId, updatePropertyTypes, publish, isTest);
 
-            foreach (var ac in result.AffectedContent)
-            {
-                var oldValue = ac.Content.GetValue<string>(ac.PropertyType.Alias);
-                var newValue = convert(oldValue);
-                var seemedToWork = (!String.IsNullOrWhiteSpace(newValue));
-
-                if (!String.IsNullOrWhiteSpace(oldValue))
-                {
-                    result.PropertyResults.Add(new PropertyResult()
-                    {
-                        ContentName = ac.Content.Name,
-                        ContentId = ac.Content.Id,
-                        PropertyAlias = ac.PropertyType.Alias,
-                        PropertyValue = oldValue.TruncateAtWord(1000000),
-                        NewValue = newValue,
-                        IsCompatible = seemedToWork
-                    });
-
-                    if (!test && seemedToWork)
-                    {
-                        //save the new properties
-                        ac.Content.SetValue(ac.PropertyType.Alias, newValue);
-                        Services.ContentService.Save(ac.Content);
-                        //publish?
-                    }
-                }
-            }
-
-            result = result.Summarize();
+            result = result.Convert(convert);
             result.Message = "Complete.";
 
             if (result.SuccessfulConversions >= result.FailedConversions)
             {
                 result.IsCompatible = true;
-                if (!test)
-                {
-                    result.UpdatePropertyTypes();
-                }
             }
             else
             {
@@ -90,7 +58,6 @@ namespace PhoenixConverters.Converters
 
         private string convert(string input)
         {
-
             /*
              *              * <MultiNodePicker type="content">                 <nodeId>1196</nodeId>                 <nodeId>1197</nodeId>               </MultiNodePicker>
              * 

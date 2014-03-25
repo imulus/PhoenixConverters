@@ -21,6 +21,6 @@ namespace PhoenixConverters.Abstract
         public abstract string Alias { get; }
         public abstract string Name { get; }
         public abstract string ConvertTo { get; }
-        public abstract ConversionResult Convert(int sourceDataTypeId, int targetDataTypeId, bool preview = true);
+        public abstract ConversionResult Convert(int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish, bool preview = true);
     }
 }
