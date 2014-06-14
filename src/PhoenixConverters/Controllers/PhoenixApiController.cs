@@ -28,7 +28,7 @@ namespace PhoenixConverters.Controllers
         }
 
         [HttpGet]
-        public object Test(string alias, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish)
+        public object Test(string alias, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes = false, bool publish = false)
         {
             var converter = PhoenixCore.GetAllConverters().Where(x => x.Alias.ToLower() == alias.ToLower()).FirstOrDefault();
 
@@ -53,7 +53,7 @@ namespace PhoenixConverters.Controllers
         }
 
         [HttpGet]
-        public object Conversion(string alias, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes, bool publish)
+        public object Conversion(string alias, int sourceDataTypeId, int targetDataTypeId, bool updatePropertyTypes = false, bool publish = false)
         {
             var converter = PhoenixCore.GetAllConverters().Where(x => x.Alias.ToLower() == alias.ToLower()).FirstOrDefault();
 
