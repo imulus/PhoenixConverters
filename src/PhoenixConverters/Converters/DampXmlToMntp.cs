@@ -97,7 +97,7 @@ namespace PhoenixConverters.Converters
 
                 var idList = new List<string>();
 
-                foreach (XmlNode element in xd.SelectNodes("//Image"))
+                foreach (XmlNode element in xd.SelectNodes("//mediaItem/node()"))
                 {
                     idList.Add(element.Attributes["id"].Value);
                 }
